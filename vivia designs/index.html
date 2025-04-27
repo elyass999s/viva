@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>Viva Designs - Milky Way</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js"></script>
+  <script src="https://cdn.lordicon.com/lordicon.js"></script>
+  <style>
+    body, html {
+      margin: 0;
+      overflow: hidden;
+      background: black;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.7rem 2rem;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      box-sizing: border-box;
+    }
+
+    .logo {
+      color: #00ffff;
+      font-size: 2rem;
+      font-weight: bold;
+      text-shadow: 0 0 10px #00ffff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    nav {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    nav a {
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #00ffff;
+      transform: scale(1.1);
+    }
+
+    canvas {
+      display: block;
+    }
+
+    #header-text {
+      position: absolute;
+      top: 40%;
+      width: 100%;
+      text-align: center;
+      color: #00ffff;
+      font-size: 5rem;
+      font-family: 'Orbitron', sans-serif;
+      text-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff;
+      z-index: 10;
+      pointer-events: none;
+      padding: 0 1rem;
+      box-sizing: border-box;
+    }
+
+    nav lord-icon {
+      width: 30px;
+      height: 30px;
+    }
+
+    /* --- ریسپانسیو --- */
+
+    @media (max-width: 1024px) {
+      header {
+        padding: 0.5rem 1.5rem;
+      }
+      .logo {
+        font-size: 1.5rem;
+      }
+      nav a {
+        font-size: 0.9rem;
+        gap: 0.3rem;
+      }
+      #header-text {
+        font-size: 4rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        gap: 1rem;
+      }
+      .logo {
+        font-size: 1.3rem;
+      }
+      nav a {
+        font-size: 0.8rem;
+      }
+      nav lord-icon {
+        width: 24px;
+        height: 24px;
+      }
+      #header-text {
+        font-size: 3rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0.5rem 1rem;
+      }
+      nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+        margin-top: 0.5rem;
+      }
+      nav a {
+        font-size: 0.7rem;
+        padding: 0.3rem 0.5rem;
+      }
+      nav lord-icon {
+        width: 20px;
+        height: 20px;
+      }
+      #header-text {
+        font-size: 2.2rem;
+        top: 35%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">
+    <lord-icon
+      src="https://cdn.lordicon.com/lzgqzxrq.json"
+      trigger="loop"
+      colors="primary:#00ffff,secondary:#ffffff">
+    </lord-icon>
+    Viva Designs
+  </div>
+  <nav>
+    <a href="#">
+      <lord-icon src="https://cdn.lordicon.com/hjbsbdhw.json" trigger="loop" colors="primary:#ffffff,secondary:#00ffff"></lord-icon> Home
+    </a>
+    <a href="#">
+      <lord-icon src="https://cdn.lordicon.com/qhviklyi.json" trigger="loop" colors="primary:#ffffff,secondary:#00ffff"></lord-icon> Services
+    </a>
+    <a href="#">
+      <lord-icon src="https://cdn.lordicon.com/eszyyflr.json" trigger="loop" colors="primary:#ffffff,secondary:#00ffff"></lord-icon> About Us
+    </a>
+    <a href="#">
+      <lord-icon src="https://cdn.lordicon.com/aycieyht.json" trigger="loop" colors="primary:#ffffff,secondary:#00ffff"></lord-icon> Contact Us
+    </a>
+  </nav>
+</header>
+
+<div id="header-text">Viva Designs</div>
+
+<script>
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 5000);
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+  const pointLight = new THREE.PointLight(0xffffff, 1.5);
+  pointLight.position.set(0, 0, 0);
+  scene.add(pointLight);
+
+  const starsGeometry = new THREE.BufferGeometry();
+  const starVertices = [];
+  const starColors = [];
+
+  for (let i = 0; i < 60000; i++) {
+    const radius = Math.random() * 2000 + 500;
+    const angle = Math.random() * Math.PI * 2;
+    const branch = (i % 5) * (Math.PI * 2) / 5;
+    const spinAngle = angle + branch;
+    
+    const x = Math.cos(spinAngle) * radius + (Math.random() - 0.5) * 100;
+    const y = (Math.random() - 0.5) * 300;
+    const z = Math.sin(spinAngle) * radius + (Math.random() - 0.5) * 100;
+
+    starVertices.push(x, y, z);
+
+    const color = new THREE.Color();
+    color.setHSL(0.6 + Math.random() * 0.4, 1, Math.random() * 0.5 + 0.5);
+    starColors.push(color.r, color.g, color.b);
+  }
+
+  starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+  starsGeometry.setAttribute('color', new THREE.Float32BufferAttribute(starColors, 3));
+
+  const starsMaterial = new THREE.PointsMaterial({ size: 0.7, vertexColors: true });
+  const stars = new THREE.Points(starsGeometry, starsMaterial);
+  scene.add(stars);
+
+  const core = new THREE.Mesh(
+    new THREE.SphereGeometry(50, 64, 64),
+    new THREE.MeshBasicMaterial({ color: 0xffffff, emissive: 0xffffcc, emissiveIntensity: 2 })
+  );
+  core.position.set(0, 0, -1000);
+  scene.add(core);
+
+  const sun = new THREE.Mesh(
+    new THREE.SphereGeometry(40, 64, 64),
+    new THREE.MeshBasicMaterial({ color: 0xFFFF00, emissive: 0xFFFF00, emissiveIntensity: 2 })
+  );
+  sun.position.set(0, 0, -300);
+  scene.add(sun);
+
+  const earthTexture = new THREE.TextureLoader().load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg');
+  const earth = new THREE.Mesh(
+    new THREE.SphereGeometry(15, 64, 64),
+    new THREE.MeshPhongMaterial({ map: earthTexture })
+  );
+  earth.userData = { radius: 100, speed: 0.01, angle: 0 };
+  scene.add(earth);
+
+  const saturn = new THREE.Mesh(
+    new THREE.SphereGeometry(25, 64, 64),
+    new THREE.MeshPhongMaterial({ color: 0xffcc99 })
+  );
+  saturn.userData = { radius: 200, speed: 0.005, angle: Math.random() * Math.PI * 2 };
+  scene.add(saturn);
+
+  const ringGeometry = new THREE.RingGeometry(30, 40, 64);
+  const ringMaterial = new THREE.MeshBasicMaterial({ color: 0xaaaaaa, side: THREE.DoubleSide });
+  const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+  ring.rotation.x = Math.PI / 2;
+  scene.add(ring);
+
+  const uranus = new THREE.Mesh(
+    new THREE.SphereGeometry(20, 64, 64),
+    new THREE.MeshPhongMaterial({ color: 0x66ccff })
+  );
+  uranus.userData = { radius: 300, speed: 0.003, angle: Math.random() * Math.PI * 2 };
+  scene.add(uranus);
+
+  camera.position.z = 150;
+
+  document.addEventListener('mousemove', (e) => {
+    const x = (e.clientX / window.innerWidth) * 2 - 1;
+    const y = -(e.clientY / window.innerHeight) * 2 + 1;
+    camera.rotation.y = x * 0.2;
+    camera.rotation.x = y * 0.2;
+  });
+
+  function animate() {
+    requestAnimationFrame(animate);
+
+    stars.rotation.y += 0.0002;
+
+    [earth, saturn, uranus].forEach(planet => {
+      planet.userData.angle += planet.userData.speed;
+      planet.position.x = sun.position.x + Math.cos(planet.userData.angle) * planet.userData.radius;
+      planet.position.z = sun.position.z + Math.sin(planet.userData.angle) * planet.userData.radius;
+    });
+
+    ring.position.copy(saturn.position);
+    ring.rotation.z += 0.001;
+
+    renderer.render(scene, camera);
+  }
+
+  animate();
+
+  // Responsive resize
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+</script>
+
+</body>
+</html>
